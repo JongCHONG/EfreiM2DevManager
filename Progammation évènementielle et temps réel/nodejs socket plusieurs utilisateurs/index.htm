@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title></title>
+</head>
+<body>
+
+    <ul id="messages"></ul>
+	<form id="form">
+		<input type="text" name="input" id="input" style="width:300px">
+		<button type="submit">Envoyer</button>
+	</form>
+
+
+    <script
+      src="https://code.jquery.com/jquery-3.7.1.min.js"
+      integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+      crossorigin="anonymous"></script>
+	<script src="/socket.io/socket.io.js"></script>
+	<script type="text/javascript">
+
+        // ?? le temps de chargement de jquery
+        jQuery(document).ready(function() {
+
+            var socket = io();
+            let input = $("#input");
+            let userName = "";
+            let messages = $("#messages");
+
+            input.attr("placeholder","Merci de saisir votre nom")
+
+
+            // lorsque l'utilisateur click sur submit
+            $('#form').submit(function (event) {
+                event.preventDefault();
+
+                if (userName == "") {
+                    userName = input.val()
+                    socket.emit("register", userName)
+                    input.val("");
+                    input.attr("placeholder","Bonjour " + userName + " tu peut envoyer un message")
+                }else{
+                    // je vais envoyer un message
+                    socket.emit("send", {
+                        from:userName, 
+                        msg : input.val()
+                    })
+                    input.val("");
+                }
+             
+             });
+
+
+            socket.on("recupererMsg", function(msg){
+                messages.append($("<li>").text(msg))
+            })
+
+        });
+
+		/*
+		
+
+		var form = document.getElementById("form")
+		var input = document.getElementById("input")
+        var messages = document.getElementById("messages")
+
+		form.addEventListener("submit" , function(e) {
+			e.preventDefault(); // stopper la redirection
+			if(input.value){
+                // envoyer
+				socket.emit("send", input.value)
+				input.value = ""
+			}
+		});
+
+        // on : réception
+        socket.on("recupererMsg", function(msg){
+            // créer un li
+            var li = document.createElement("li");
+            li.textContent = msg;
+            messages.appendChild(li)
+        })*/
+
+	</script>
+</body>
+</html>
