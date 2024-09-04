@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
+import "react-toastify/dist/ReactToastify.css";
 
 import "./App.css";
 import logo from "../src/assets/logo.jpeg";
@@ -36,41 +37,37 @@ const responsive = {
 };
 
 function App() {
-  const [isRegistered, setIsRegistered] = useState(false);
+  const [showChat, setShowChat] = useState(false);
   const [usersList, setUsersList] = useState([]);
   const socket = useContext(SocketContext);
-  const { user, setUser } = useContext(UserContext);
+  const { user } = useContext(UserContext);
 
   useEffect(() => {
     socket.on("connect", () => {
       console.log("Connecté au serveur");
     });
 
-    socket.on("userRegistered", (user) => {
-      setIsRegistered(true);
-      setUser(user);
-      console.log("Utilisateur enregistré:", user);
-    });
-
-    socket.on("usersList", (users) => {
+    socket.on("connectedUsers", (users) => {
       setUsersList(users);
     });
 
     return () => {
       socket.off("connect");
-      socket.off("userRegistered");
-      socket.off("usersList");
+      socket.off("connectedUsers");
     };
-  }, [socket, setUser]);
+  }, [socket]);
 
-  console.log(usersList);
+  console.log("usersList", usersList);
+  console.log("user", user);
+  console.log("showChat", showChat);
+  
   return (
     <div className="App">
-      {!isRegistered ? (
+      {!showChat ? (
         <Container>
           <Row className="align-items-center">
             <Col xs={12} lg={4}>
-              <Login />
+              <Login setShowChat={setShowChat}/>
             </Col>
             <Col
               xs={12}
@@ -81,7 +78,7 @@ function App() {
               <h1 className="title">SocketChat</h1>
             </Col>
             <Col xs={12} lg={4}>
-              <Subscription />
+              <Subscription setShowChat={setShowChat}/>
             </Col>
           </Row>
         </Container>

@@ -1,28 +1,30 @@
 const express = require("express");
 const http = require("http");
-const socketIo = require('socket.io');
+const socketIo = require("socket.io");
 const mongoose = require("mongoose");
 const { join } = require("node:path");
-const cors = require('cors');
+const cors = require("cors");
 const Message = require("./models/Message");
 const User = require("./models/User");
 
-require('dotenv').config(); // Load environment variables
+require("dotenv").config(); // Load environment variables
 
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
     origin: `http://localhost:3000`, // Autoriser les requêtes depuis votre application React
-    methods: ["GET", "POST"]
-  }
+    methods: ["GET", "POST"],
+  },
 });
 const dbName = process.env.DB_NAME;
 const connectedUsers = {};
 
-app.use(cors({
-  origin: `http://localhost:3000` // Autoriser les requêtes depuis votre application React
-}));
+app.use(
+  cors({
+    origin: `http://localhost:3000`, // Autoriser les requêtes depuis votre application React
+  })
+);
 
 //avec ça on accede à page client.html via localhost:3000
 app.get("/", (req, res) => {
@@ -34,9 +36,7 @@ const usersRoutes = require("./routes/users");
 mongoose.set("strictQuery", false);
 
 // Connexion à MongoDB
-mongoose.connect(
-  `${process.env.MONGODB}${dbName}`
-);
+mongoose.connect(`${process.env.MONGODB}${dbName}`);
 
 // Vérifier la connexion à MongoDB
 mongoose.connection.on("connected", () => {
@@ -72,6 +72,7 @@ io.on("connection", (socket) => {
       // Ajoutez l'utilisateur à la liste des utilisateurs connectés
       connectedUsers[socket.id] = username;
       socket.emit("userRegistered", user);
+      io.emit("connectedUsers", Object.values(connectedUsers));
     } catch (err) {
       console.error("Erreur lors de l'enregistrement de l'utilisateur:", err);
       socket.emit("registrationError", err.message);
@@ -86,16 +87,15 @@ io.on("connection", (socket) => {
         return;
       }
 
-      
       const isPasswordValid = user.password === password;
       if (!isPasswordValid) {
         socket.emit("loginError", "Email ou mot de passe incorrect.");
         return;
       }
 
-      // Ajoutez l'utilisateur à la liste des utilisateurs connectés
       connectedUsers[socket.id] = user.username;
       socket.emit("userLoggedIn", user);
+      io.emit("connectedUsers", Object.values(connectedUsers));
     } catch (err) {
       console.error("Erreur lors de la connexion de l'utilisateur:", err);
       socket.emit("loginError", err.message);
@@ -108,7 +108,7 @@ io.on("connection", (socket) => {
     if (toSocketId) {
       io.to(toSocketId).emit("privateMessage", {
         from: socket.id,
-        text: message.text
+        text: message.text,
       });
     }
   });

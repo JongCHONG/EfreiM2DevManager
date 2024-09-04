@@ -1,12 +1,15 @@
 import React, { useState, useContext, useEffect } from "react";
-import { SocketContext } from "../contexts/SocketContext";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
-const Login = () => {
+import { SocketContext } from "../contexts/SocketContext";
+import { UserContext } from "../contexts/UserContext";
+
+
+const Login = ({ setShowChat }) => {
   const socket = useContext(SocketContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { setUser } = useContext(UserContext);
 
   useEffect(() => {
     socket.on("loginError", (errorMessage) => {
@@ -40,6 +43,12 @@ const Login = () => {
 
     socket.emit("login", { email, password });
   };
+
+  socket.on("userLoggedIn", (user) => {
+    setShowChat(true);
+    setUser(user);
+    console.log("Utilisateur enregistré:", user);
+  });
 
   return (
     <>
