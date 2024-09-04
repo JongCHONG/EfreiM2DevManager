@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>SocketChatRoom</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript">
+      document.addEventListener("DOMContentLoaded", () => {
+        const socket = io();
+        let selectedUser = null;
+
+        socket.on("connect", () => {
+          const username = prompt("Entrez votre nom d'utilisateur:");
+          socket.emit("register", username);
+        });
+
+        socket.on("userConnected", (user) => {
+          addUserToList(user);
+        });
+
+        socket.on("userRegistered", (user) => {
+          const welcomeMessage = document.getElementById("welcomeMessage");
+          welcomeMessage.textContent = `Bienvenue, ${user.username}!`;
+        });
+
+        socket.on("registrationError", (error) => {
+          console.error("Erreur d'enregistrement:", error);
+        });
+
+        socket.on("usersList", (users) => {
+          const usersListElement = document.getElementById("usersList");
+          usersListElement.innerHTML = ""; // Vider la liste actuelle
+          users.forEach((user) => {
+            addUserToList(user);
+          });
+        });
+
+        socket.on("privateMessage", (message) => {
+          console.log("Message privé reçu:", message);
+          alert(`Message de ${message.from}: ${message.text}`);
+        });
+
+        document
+          .getElementById("privateMessageForm")
+          .addEventListener("submit", (e) => {
+            e.preventDefault();
+            const messageText = document.getElementById("messageText").value;
+            if (selectedUser) {
+              socket.emit("privateMessage", {
+                to: selectedUser,
+                text: messageText,
+              });
+            } else {
+              alert(
+                "Veuillez sélectionner un utilisateur pour envoyer un message."
+              );
+            }
+          });
+
+        function addUserToList(user) {
+          const userList = document.getElementById("usersList");
+          const userItem = document.createElement("li");
+          userItem.textContent = user.username;
+          userItem.addEventListener("click", () => {
+            if (selectedUser !== user.username) {
+              selectedUser = user.username;
+              document.getElementById(
+                "selectedUser"
+              ).textContent = `Envoyer un message à: ${user.username}`;
+            }
+          });
+          const existingUser = Array.from(userList.children).find(
+            (item) => item.textContent === user.username
+          );
+          if (!existingUser) {
+            userList.appendChild(userItem);
+          }
+        }
+      });
+    </script>
+  </head>
+  <body>
+    <h1>SocketChatRoom</h1>
+    <h2 id="welcomeMessage">Bienvenue!</h2>
+
+    <h2>Liste des utilisateurs</h2>
+    <ul id="usersList"></ul>
+    <h2 id="selectedUser">
+      Sélectionnez un utilisateur pour envoyer un message
+    </h2>
+    <form id="privateMessageForm">
+      <input
+        type="text"
+        id="messageText"
+        placeholder="Votre message"
+        required
+      />
+      <button type="submit">Envoyer</button>
+    </form>
+  </body>
+</html>
