@@ -7,19 +7,21 @@ const cors = require('cors');
 const Message = require("./models/Message");
 const User = require("./models/User");
 
+require('dotenv').config(); // Load environment variables
+
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: "http://localhost:3000", // Autoriser les requêtes depuis votre application React
+    origin: `http://localhost:${process.env.PORT}`, // Autoriser les requêtes depuis votre application React
     methods: ["GET", "POST"]
   }
 });
-const dbName = "socketChat";
+const dbName = process.env.DB_NAME;
 const connectedUsers = {};
 
 app.use(cors({
-  origin: "http://localhost:3000" // Autoriser les requêtes depuis votre application React
+  origin: `http://localhost:${process.env.PORT}` // Autoriser les requêtes depuis votre application React
 }));
 
 //avec ça on accede à page client.html via localhost:3000
@@ -33,7 +35,7 @@ mongoose.set("strictQuery", false);
 
 // Connexion à MongoDB
 mongoose.connect(
-  `mongodb+srv://jochong:jochong@cluster0.6t0buxn.mongodb.net/${dbName}`
+  `${process.env.MONGODB}${dbName}`
 );
 
 // Vérifier la connexion à MongoDB
