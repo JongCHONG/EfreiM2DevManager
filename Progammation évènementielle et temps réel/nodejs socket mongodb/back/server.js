@@ -13,7 +13,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: `http://localhost:${process.env.PORT}`, // Autoriser les requêtes depuis votre application React
+    origin: `http://localhost:3000`, // Autoriser les requêtes depuis votre application React
     methods: ["GET", "POST"]
   }
 });
@@ -21,7 +21,7 @@ const dbName = process.env.DB_NAME;
 const connectedUsers = {};
 
 app.use(cors({
-  origin: `http://localhost:${process.env.PORT}` // Autoriser les requêtes depuis votre application React
+  origin: `http://localhost:3000` // Autoriser les requêtes depuis votre application React
 }));
 
 //avec ça on accede à page client.html via localhost:3000
@@ -51,19 +51,54 @@ mongoose.connection.on("error", (err) => {
 io.on("connection", (socket) => {
   console.log("Un utilisateur est connecté");
 
-  socket.on("register", async (username) => {
-    console.log("Un utilisateur est connecté sous le nom de " + username);
+  socket.on("register", async ({ username, email, password }) => {
+    console.log(`Un utilisateur est connecté sous le nom de ${username}`);
     try {
       let user = await User.findOne({ username });
-      if (!user) {
-        user = new User({ username });
-        await user.save();
+      if (user) {
+        socket.emit("registrationError", "Le nom d'utilisateur existe déjà.");
+        return;
       }
-      connectedUsers[username] = socket.id; // Ajouter l'utilisateur à connectedUsers
-      socket.emit("userRegistered", user); // Envoyer une réponse au client
-      io.emit("usersList", Object.keys(connectedUsers)); // Notifier tous les clients connectés avec la liste des utilisateurs
-    } catch (error) {
-      socket.emit("registrationError", error); // Envoyer une erreur au client
+
+      user = await User.findOne({ email });
+      if (user) {
+        socket.emit("registrationError", "L'email existe déjà.");
+        return;
+      }
+
+      user = new User({ username, email, password });
+      await user.save();
+
+      // Ajoutez l'utilisateur à la liste des utilisateurs connectés
+      connectedUsers[socket.id] = username;
+      socket.emit("userRegistered", user);
+    } catch (err) {
+      console.error("Erreur lors de l'enregistrement de l'utilisateur:", err);
+      socket.emit("registrationError", err.message);
+    }
+  });
+
+  socket.on("login", async ({ email, password }) => {
+    try {
+      const user = await User.findOne({ email });
+      if (!user) {
+        socket.emit("loginError", "L'utilisateur n'existe pas.");
+        return;
+      }
+
+      
+      const isPasswordValid = user.password === password;
+      if (!isPasswordValid) {
+        socket.emit("loginError", "Email ou mot de passe incorrect.");
+        return;
+      }
+
+      // Ajoutez l'utilisateur à la liste des utilisateurs connectés
+      connectedUsers[socket.id] = user.username;
+      socket.emit("userLoggedIn", user);
+    } catch (err) {
+      console.error("Erreur lors de la connexion de l'utilisateur:", err);
+      socket.emit("loginError", err.message);
     }
   });
 

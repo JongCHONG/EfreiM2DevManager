@@ -1,13 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 
 import "./App.css";
 import logo from "../src/assets/logo.jpeg";
-import Message from "./components/Message";
 
-import io from "socket.io-client";
-const socket = io("http://localhost:5000/"); // Remplacez par l'URL de votre serveur
+import Message from "./components/Message";
+import Subscription from "./components/Subscription";
+import Login from "./components/Login";
+
+import { SocketContext } from "./contexts/SocketContext";
+import { UserContext } from "./contexts/UserContext";
+
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 const responsive = {
   superLargeDesktop: {
@@ -29,9 +36,10 @@ const responsive = {
 };
 
 function App() {
-  const [username, setUsername] = useState("");
   const [isRegistered, setIsRegistered] = useState(false);
   const [usersList, setUsersList] = useState([]);
+  const socket = useContext(SocketContext);
+  const { user, setUser } = useContext(UserContext);
 
   useEffect(() => {
     socket.on("connect", () => {
@@ -40,11 +48,8 @@ function App() {
 
     socket.on("userRegistered", (user) => {
       setIsRegistered(true);
+      setUser(user);
       console.log("Utilisateur enregistré:", user);
-    });
-
-    socket.on("registrationError", (error) => {
-      console.error("Erreur d'enregistrement:", error);
     });
 
     socket.on("usersList", (users) => {
@@ -54,35 +59,35 @@ function App() {
     return () => {
       socket.off("connect");
       socket.off("userRegistered");
-      socket.off("registrationError");
       socket.off("usersList");
     };
-  }, []);
-
-  const handleRegister = () => {
-    if (username.trim()) {
-      socket.emit("register", username);
-    }
-  };
+  }, [socket, setUser]);
 
   console.log(usersList);
   return (
     <div className="App">
-      <img src={logo} alt="logo" className="logo"/>
-      SocketRoom
       {!isRegistered ? (
-        <div>
-          <input
-            type="text"
-            placeholder="Entrez votre nom d'utilisateur"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-          <button onClick={handleRegister}>S'inscrire</button>
-        </div>
+        <Container>
+          <Row className="align-items-center">
+            <Col xs={12} lg={4}>
+              <Login />
+            </Col>
+            <Col
+              xs={12}
+              lg={4}
+              className="d-flex flex-column align-items-center justify-content-center"
+            >
+              <img src={logo} alt="logo" className="logo" />
+              <h1 className="title">SocketChat</h1>
+            </Col>
+            <Col xs={12} lg={4}>
+              <Subscription />
+            </Col>
+          </Row>
+        </Container>
       ) : (
         <div>
-          <h2>Bienvenue, {username}!</h2>
+          <h2>Bienvenue, {user && user.username}!</h2>
           <Message />
           <h2>Utilisateurs connectés :</h2>
           <Carousel
