@@ -39,20 +39,15 @@ const Message = ({ selectedUser, allMessages, onSendMessage }) => {
     }
   }, [selectedUser]);
 
-  const filteredMessages = sortedAllMessages.filter(
+  const filteredMessages = sortedAllMessages?.filter(
     (message) =>
-      message.senderId._id === user.id && message.recieverId._id === to._id
+      (message.senderId?._id === user?.id && message.receiverId?._id === to?._id) ||
+      (message.senderId?._id === to?._id && message.receiverId?._id === user?.id)
   );
-
-  console.log("filteredMessages", filteredMessages);
-
-  // console.log("user", user);
-  // console.log("to", to);
-  console.log("allMessages", allMessages);
 
   return (
     <div className="message-container">
-      {filteredMessages.map((msg, index) => (
+      {filteredMessages?.map((msg, index) => (
         <div key={index}>
           <div style={{ textAlign: msg.senderId._id === user.id && "right" }}>
             <strong>{msg.senderId.username}</strong>:{msg.message}

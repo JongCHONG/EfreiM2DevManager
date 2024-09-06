@@ -100,7 +100,7 @@ function App() {
     }
   };
 
-  const handleSendMessage = (message) => {
+  const handleSendMessage = (message) => {    
     if (!selectedUser.socketId) {
       setError("Veuillez sélectionner un utilisateur");
     }

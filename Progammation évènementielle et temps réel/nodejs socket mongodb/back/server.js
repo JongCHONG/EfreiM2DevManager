@@ -27,6 +27,8 @@ app.use(
   })
 );
 
+app.use(express.json());
+
 const usersRoutes = require("./routes/users");
 const messagesRoutes = require("./routes/messages");
 app.use("/users", usersRoutes);
@@ -168,7 +170,7 @@ io.on("connection", (socket) => {
       let newMessage = new Message({
         message,
         senderId: sender._id,
-        recieverId: receiver._id,
+        receiverId: receiver._id,
         dateSent: new Date(),
       });
 
