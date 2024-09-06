@@ -4,8 +4,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { SocketContext } from "../contexts/SocketContext";
 import { UserContext } from "../contexts/UserContext";
 
-
-const Subscription = ({setShowChat}) => {
+const Subscription = () => {
   const socket = useContext(SocketContext);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -49,7 +48,8 @@ const Subscription = ({setShowChat}) => {
   };
 
   socket.on("userRegistered", (user) => {
-    setShowChat(true);
+    localStorage.setItem("user", JSON.stringify(user));
+
     setUser(user);
     console.log("Utilisateur enregistré:", user);
   });

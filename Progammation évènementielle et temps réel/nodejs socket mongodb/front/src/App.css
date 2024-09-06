@@ -4,10 +4,14 @@
 .App {
   background-color: #e5f2f6;
   height: 100vh;
+  font-family: "Urbanist", sans-serif;
+}
+
+.home {
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: "Urbanist", sans-serif;
 }
 
 .title {
@@ -18,4 +22,40 @@
   width: 200px;
   height: 200px;
   margin-bottom: 20px;
+}
+
+.circle {
+  width: 80px;
+  height: 70px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2em;
+  color: white;
+  font-weight: bold;
+}
+
+.truncate {
+  margin-left: 20px;
+  text-transform: capitalize;
+  width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.message-sender {
+  background-color: aqua;
+}
+.message-receiver {
+background-color: rgb(9, 99, 177);}
+.message-box {
+  padding: 10px;
+  border-top: 1px solid #ccc;
+}
+
+.message-box textarea {
+  width: 100%;
+  margin-bottom: 10px;
 }

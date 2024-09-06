@@ -4,11 +4,10 @@ import { ToastContainer, toast } from "react-toastify";
 import { SocketContext } from "../contexts/SocketContext";
 import { UserContext } from "../contexts/UserContext";
 
-
-const Login = ({ setShowChat }) => {
+const Login = () => {
   const socket = useContext(SocketContext);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("pop@test.com");
+  const [password, setPassword] = useState("pop");
   const { setUser } = useContext(UserContext);
 
   useEffect(() => {
@@ -45,7 +44,7 @@ const Login = ({ setShowChat }) => {
   };
 
   socket.on("userLoggedIn", (user) => {
-    setShowChat(true);
+    localStorage.setItem("user", JSON.stringify(user));
     setUser(user);
     console.log("Utilisateur enregistré:", user);
   });
