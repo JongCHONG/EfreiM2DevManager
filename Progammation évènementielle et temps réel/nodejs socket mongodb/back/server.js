@@ -165,7 +165,7 @@ io.on("connection", (socket) => {
         return;
       }
 
-      const newMessage = new Message({
+      let newMessage = new Message({
         message,
         senderId: sender._id,
         recieverId: receiver._id,
@@ -175,15 +175,11 @@ io.on("connection", (socket) => {
       await newMessage.save();
       console.log("Message saved to database");
 
-      io.to(to).emit("receiveMessage", {
-        from: sender._id,
-        message,
-        dateSent: newMessage.dateSent,
-      });
+      io.to(to).emit("receiveMessage", newMessage._id);
     } catch (error) {
       console.error("Error processing sendMessage event:", error);
     }
-  });
+});
 
   socket.on("disconnectUser", async (socketId) => {
     console.log(`L'utilisateur avec socketId ${socketId} se déconnecte`);

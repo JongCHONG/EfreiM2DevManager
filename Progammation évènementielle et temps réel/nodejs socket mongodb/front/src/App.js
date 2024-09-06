@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 
 import "./App.css";
@@ -18,7 +19,7 @@ import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 
 import { getRandomColor } from "./helpers";
-
+import { getUserbySocketId } from "../src/helpers"
 function App() {
   const [usersList, setUsersList] = useState([]);
   const socket = useContext(SocketContext);
@@ -28,8 +29,8 @@ function App() {
     username: "",
     socketId: "",
   });
-  const [receivedMessages, setReceivedMessages] = useState([]);
-  const [sentMessages, setSentMessages] = useState([]);
+  const [error, setError] = useState(null);
+  const [allMessages, setAllMessages] = useState([]);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -47,28 +48,27 @@ function App() {
       setUsersList(users);
     });
 
-    socket.on("receiveMessage", async ({ from, message, dateSent }) => {
-      console.log(`Message from ${from}: ${message}`);
-
+    socket.on("receiveMessage", async (newMessageId) => {
       try {
-        const response = await axios.get(`http://localhost:5000/users/${from}`);
-        const sender = response.data;
-
-        setReceivedMessages((prevMessages) => [
-          ...prevMessages,
-          { from: sender.username, message, dateSent },
-        ]);
+        const response = await axios.get(
+          `http://localhost:5000/messages/${newMessageId}`
+        );
+        setAllMessages((prevMessages) => [...prevMessages, response.data]);
       } catch (error) {
-        console.error("Error fetching user:", error);
+        console.error("Erreur:", error);
       }
     });
+
+    if (error) {
+      toast.error(error);
+    }
 
     return () => {
       socket.off("connect");
       socket.off("receiveMessage");
       socket.off("connectedUsers");
     };
-  }, [socket, setUser]);
+  }, [socket, setUser, error]);
 
   if (isLoading) {
     return <div>Chargement...</div>;
@@ -77,6 +77,8 @@ function App() {
   const handleLogout = () => {
     localStorage.removeItem("user");
     setUser(null);
+    setAllMessages([]);
+    setSelectedUser({ username: "", socketId: "" });
     socket.emit("disconnectUser", user.socketId);
     setTimeout(() => {
       socket.connect();
@@ -85,39 +87,29 @@ function App() {
 
   const handleUserClick = async (username, socketId) => {
     setSelectedUser({ username, socketId });
-    // setReceivedMessages([]);
-    // setSentMessages([]);
 
-    try {
-      const reciever = await axios.get(
-        `http://localhost:5000/users/getUserBySocketId/${socketId}`
-      );
+    try {      
+      const receiver = await getUserbySocketId(socketId);           
       const response = await axios.get(
-        `http://localhost:5000/messages/${user.id}/${reciever.data._id}`
+        `http://localhost:5000/messages/${user.id}/${receiver._id}`
       );
-      const messages = response.data;
+      setAllMessages(response.data);
 
-      const received = messages.filter((msg) => msg.recieverId._id === user.id);
-      const sent = messages.filter((msg) => msg.senderId._id === user.id);
-
-      setReceivedMessages(received);
-      setSentMessages(sent);
     } catch (error) {
       console.error("Error fetching messages:", error);
     }
   };
 
   const handleSendMessage = (message) => {
+    if (!selectedUser.socketId) {
+      setError("Veuillez sélectionner un utilisateur");
+    }
     if (message.trim() !== "") {
       socket.emit("sendMessage", {
         to: selectedUser.socketId,
         from: user.socketId,
         message,
       });
-      setSentMessages((prevMessages) => [
-        ...prevMessages,
-        { to: selectedUser.username, message, dateSent: new Date() },
-      ]);
     }
   };
   return (
@@ -176,11 +168,12 @@ function App() {
                   Déconnexion
                 </Button>
               </div>
-
+              <ToastContainer />
               <Message
                 selectedUser={selectedUser}
-                receivedMessages={receivedMessages}
-                sentMessages={sentMessages}
+                allMessages={allMessages}
+                // receivedMessages={receivedMessages}
+                // sentMessages={sentMessages}
                 onSendMessage={handleSendMessage}
               />
             </div>

@@ -2,14 +2,11 @@ import React, { useState, useEffect, useRef, useContext } from "react";
 import "../App.css";
 import Button from "react-bootstrap/Button";
 import { UserContext } from "../contexts/UserContext";
+import { getUserbySocketId } from "../helpers";
 
-const Message = ({
-  selectedUser,
-  receivedMessages,
-  sentMessages,
-  onSendMessage,
-}) => {
+const Message = ({ selectedUser, allMessages, onSendMessage }) => {
   const [message, setMessage] = useState("");
+  const [to, setTo] = useState(null);
   const { username } = selectedUser;
   const messagesEndRef = useRef(null);
   const { user } = useContext(UserContext);
@@ -25,19 +22,43 @@ const Message = ({
 
   useEffect(() => {
     scrollToBottom();
-  }, [receivedMessages, sentMessages]);
+  }, [allMessages]);
 
-  const allMessages = [...receivedMessages, ...sentMessages].sort(
+  const sortedAllMessages = allMessages.sort(
     (a, b) => new Date(a.dateSent) - new Date(b.dateSent)
   );
 
+  useEffect(() => {
+    const fetchUserId = async () => {
+      const selectedUserInfos = await getUserbySocketId(selectedUser.socketId);
+      setTo(selectedUserInfos);
+    };
+
+    if (selectedUser.socketId !== "") {
+      fetchUserId();
+    }
+  }, [selectedUser]);
+
+  const filteredMessages = sortedAllMessages.filter(
+    (message) =>
+      message.senderId._id === user.id && message.recieverId._id === to._id
+  );
+
+  console.log("filteredMessages", filteredMessages);
+
+  // console.log("user", user);
+  // console.log("to", to);
+  console.log("allMessages", allMessages);
+
   return (
     <div className="message-container">
-      {allMessages.map((msg, index) => (
+      {filteredMessages.map((msg, index) => (
         <div key={index}>
           <div style={{ textAlign: msg.senderId._id === user.id && "right" }}>
-            <strong>{msg.senderId.username}</strong>:
-            {msg.message}
+            <strong>{msg.senderId.username}</strong>:{msg.message}
+            <div>
+              <small>{new Date(msg.dateSent).toLocaleString()}</small>
+            </div>
           </div>
         </div>
       ))}
