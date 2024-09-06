@@ -6,7 +6,7 @@ const { join } = require("node:path");
 const cors = require("cors");
 const Message = require("./models/Message");
 const User = require("./models/User");
-
+const Friendship = require("./models/Friendship");
 
 require("dotenv").config(); // Load environment variables
 
@@ -14,7 +14,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: `http://localhost:3000`, 
+    origin: `http://localhost:3000`,
     methods: ["GET", "POST"],
   },
 });
@@ -23,7 +23,7 @@ const connectedUsers = {};
 
 app.use(
   cors({
-    origin: `http://localhost:3000`, 
+    origin: `http://localhost:3000`,
   })
 );
 
@@ -38,7 +38,6 @@ app.use("/messages", messagesRoutes);
 app.get("/", (req, res) => {
   res.sendFile(join(__dirname, "client.html"));
 });
-
 
 mongoose.set("strictQuery", false);
 
@@ -132,7 +131,6 @@ io.on("connection", (socket) => {
 
   socket.on("addUser", async (username) => {
     connectedUsers[socket.id] = { username, socketId: socket.id };
-    console.log("connectedUsers", connectedUsers);
 
     try {
       await User.findOneAndUpdate(
@@ -152,8 +150,6 @@ io.on("connection", (socket) => {
   });
 
   socket.on("sendMessage", async ({ to, from, message }) => {
-    console.log(`Message from ${from} to ${to}: ${message}`);
-
     try {
       const sender = await User.findOne({ socketId: from });
       if (!sender) {
@@ -178,10 +174,13 @@ io.on("connection", (socket) => {
       console.log("Message saved to database");
 
       io.to(to).emit("receiveMessage", newMessage._id);
+      if (from !== to) {
+        io.to(from).emit("receiveMessage", newMessage._id);
+      }
     } catch (error) {
       console.error("Error processing sendMessage event:", error);
     }
-});
+  });
 
   socket.on("disconnectUser", async (socketId) => {
     console.log(`L'utilisateur avec socketId ${socketId} se déconnecte`);
@@ -205,6 +204,53 @@ io.on("connection", (socket) => {
       delete connectedUsers[socket.id];
     }
     io.emit("connectedUsers", Object.values(connectedUsers));
+  });
+
+  socket.on("sendFriendRequest", async ({ from, to }) => {
+    try {
+      const requester = await User.findOne({ _id: from });
+      const recipient = await User.findOne({ _id: to });
+     
+      if (!requester || !recipient) {
+        console.error("User not found");
+        return;
+      }
+      
+      let newFriendship = new Friendship({
+        requester: requester._id,
+        recipient: recipient._id,
+      });
+
+      await newFriendship.save();
+      console.log("Friend request sent");
+      
+      io.to(recipient.socketId).emit("receiveFriendRequest", newFriendship._id);
+    } catch (error) {
+      console.error("Error processing sendFriendRequest event:", error);
+    }
+  });
+
+  socket.on("acceptFriendRequest", async ({ requestId }) => {
+    try {
+      let friendship = await Friendship.findById(requestId);
+
+      const requesterSocketId = await User.findOne({ _id: friendship.requester });
+      const recipientSocketId = await User.findOne({ _id: friendship.recipient });
+
+      if (!friendship) {
+        console.error("Friend request not found");
+        return;
+      }
+
+      friendship.status = "accepted";
+      await friendship.save();
+      console.log("Friend request accepted")     
+      
+      io.to(requesterSocketId.socketId).emit("friendRequestAccepted", friendship._id);
+      io.to(recipientSocketId.socketId).emit("friendRequestAccepted", friendship._id);
+    } catch (error) {
+      console.error("Error processing acceptFriendRequest event:", error);
+    }
   });
 });
 

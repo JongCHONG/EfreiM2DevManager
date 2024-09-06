@@ -9,6 +9,7 @@ import logo from "../src/assets/logo.jpeg";
 import Message from "./components/Message";
 import Subscription from "./components/Subscription";
 import Login from "./components/Login";
+import FriendRequest from "./components/FriendRequest";
 
 import { SocketContext } from "./contexts/SocketContext";
 import { UserContext } from "./contexts/UserContext";
@@ -20,6 +21,7 @@ import Button from "react-bootstrap/Button";
 
 import { getRandomColor } from "./helpers";
 import { getUserbySocketId } from "../src/helpers"
+
 function App() {
   const [usersList, setUsersList] = useState([]);
   const socket = useContext(SocketContext);
@@ -136,14 +138,14 @@ function App() {
           </Container>
         </div>
       ) : (
-        <div className="pt-5">
-          <Container className="d-flex">
+        <div>
+          <Container className="d-flex pt-5">
             <div className="left" style={{ width: "25%" }}>
-              <h2 className="title">Utilisateurs en ligne</h2>
+              <h2 className="title mb-4">Utilisateurs en ligne</h2>
               {usersList?.map((userOnLine, index) => (
                 <div
                   key={index}
-                  className="d-flex align-items-center mb-2"
+                  className="user d-flex align-items-center mb-2"
                   onClick={() =>
                     handleUserClick(userOnLine.username, userOnLine.socketId)
                   }
@@ -155,6 +157,10 @@ function App() {
                     {userOnLine.username.charAt(0).toUpperCase()}
                   </div>
                   <h3 className="truncate">{userOnLine.username}</h3>
+                  <FriendRequest
+                    userId={user.id}
+                    friendSocketId={userOnLine.socketId}
+                  />
                 </div>
               ))}
             </div>
@@ -172,8 +178,6 @@ function App() {
               <Message
                 selectedUser={selectedUser}
                 allMessages={allMessages}
-                // receivedMessages={receivedMessages}
-                // sentMessages={sentMessages}
                 onSendMessage={handleSendMessage}
               />
             </div>

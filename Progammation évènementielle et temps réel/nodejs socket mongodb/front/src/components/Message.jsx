@@ -41,31 +41,48 @@ const Message = ({ selectedUser, allMessages, onSendMessage }) => {
 
   const filteredMessages = sortedAllMessages?.filter(
     (message) =>
-      (message.senderId?._id === user?.id && message.receiverId?._id === to?._id) ||
-      (message.senderId?._id === to?._id && message.receiverId?._id === user?.id)
+      (message.senderId?._id === user?.id &&
+        message.receiverId?._id === to?._id) ||
+      (message.senderId?._id === to?._id &&
+        message.receiverId?._id === user?.id)
   );
 
   return (
     <div className="message-container">
-      {filteredMessages?.map((msg, index) => (
-        <div key={index}>
-          <div style={{ textAlign: msg.senderId._id === user.id && "right" }}>
-            <strong>{msg.senderId.username}</strong>:{msg.message}
-            <div>
-              <small>{new Date(msg.dateSent).toLocaleString()}</small>
+      <div className="messages">
+        {filteredMessages?.map((msg, index) => (
+          <div
+            className="test"
+            style={{
+              justifyContent: msg.senderId._id === user.id && "flex-end",
+            }}
+          >
+            <div className="message-text" key={index}>
+              <strong>{msg.senderId.username}</strong>
+              <div className="py-2">{msg.message}</div>
+              <div className="dateTime">
+                <em>
+                  Envoyé le {new Date(msg.dateSent).toLocaleDateString()} à{" "}
+                  {new Date(msg.dateSent).toLocaleTimeString()}
+                </em>
+              </div>
             </div>
           </div>
-        </div>
-      ))}
-      <div ref={messagesEndRef} />
+        ))}
+        <div ref={messagesEndRef} />
+      </div>
       <div className="message-box">
-        <h3>Envoyer un message à {username}</h3>
-        <textarea
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          rows="4"
-          cols="50"
-        />
+        <div className="form-floating">
+          <textarea
+            className="form-control"
+            placeholder="Leave a comment here"
+            id="floatingTextarea2"
+            onChange={(e) => setMessage(e.target.value)}
+            style={{ height: "100px" }}
+            value={message}
+          />
+          <label for="floatingTextarea2">Envoyer un message à {username}</label>
+        </div>
         <Button onClick={handleSendMessage}>Envoyer</Button>
       </div>
     </div>

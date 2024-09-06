@@ -25,7 +25,7 @@
 }
 
 .circle {
-  width: 80px;
+  width: 70px;
   height: 70px;
   border-radius: 50%;
   display: flex;
@@ -45,11 +45,30 @@
   text-overflow: ellipsis;
 }
 
+.message-container {
+  display: flex;
+  flex-direction: column;
+  height: 750px;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
 .message-sender {
   background-color: aqua;
 }
 .message-receiver {
-background-color: rgb(9, 99, 177);}
+  background-color: rgb(9, 99, 177);
+}
+.message-text {
+  padding: 10px;
+  border-radius: 10px;
+  margin: 5px;
+  word-wrap: break-word;
+  background-color: rgb(255, 249, 241);
+  width: fit-content;
+  max-width: 70%;
+}
+
 .message-box {
   padding: 10px;
   border-top: 1px solid #ccc;
@@ -58,4 +77,52 @@ background-color: rgb(9, 99, 177);}
 .message-box textarea {
   width: 100%;
   margin-bottom: 10px;
+}
+
+.test {
+  display: flex;
+  width: 100%;
+}
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  max-height: calc(100vh - 150px);
+  padding: 10px;
+}
+
+.messages::-webkit-scrollbar {
+  width: 7px;
+}
+
+.messages::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.messages::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.messages::-webkit-scrollbar-thumb:hover {
+  background: #555;
+  cursor: pointer;
+}
+
+.dateTime {
+  font-size: 0.7em;
+  color: #666;
+  text-align: right;
+}
+
+.user {
+  padding: 6px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.user:hover {
+  background-color: #b9b1ff;
+  color: #333;
+  cursor: pointer;
 }
