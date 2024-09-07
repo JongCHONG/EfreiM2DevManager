@@ -81,15 +81,15 @@ const FriendRequest = ({ userId, friendSocketId }) => {
   }, [socket]);
 
   return (
-    <div>
-      <Button onClick={sendFriendRequest} disabled={status !== "idle"}>
+    <div className="d-flex flex-column">
+      <Button size="sm" onClick={sendFriendRequest} disabled={status !== "idle"}>
         {status === "idle" && "Ajouter"}
         {status === "pending" && "Demande envoyée"}
         {status === "received" && "Demande reçue"}
         {status === "accepted" && "Ami"}
       </Button>
       {status === "received" && (
-        <Button onClick={acceptFriendRequest}>
+        <Button size="sm" onClick={acceptFriendRequest}>
           Accept l'invitation
         </Button>
       )}
