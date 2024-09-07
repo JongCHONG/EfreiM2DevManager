@@ -1,29 +1,21 @@
 import React, { useState, useEffect, useContext } from "react";
+import { Container, Row, Col, Button } from "react-bootstrap";
 import "react-toastify/dist/ReactToastify.css";
-import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 
 import "./App.css";
 import logo from "../src/assets/logo.jpeg";
 
-import Message from "./components/Message";
+import PrivateMessages from "./components/PrivateMessages";
 import Subscription from "./components/Subscription";
 import Login from "./components/Login";
-import FriendRequest from "./components/FriendRequest";
+import SidePanel from "./components/SidePanel";
+import GlobalMessages from "./components/GlobalMessages";
 
 import { SocketContext } from "./contexts/SocketContext";
 import { UserContext } from "./contexts/UserContext";
 
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Button from "react-bootstrap/Button";
-
-import { getRandomColor } from "./helpers";
-import { getUserbySocketId } from "../src/helpers"
-
 function App() {
-  const [usersList, setUsersList] = useState([]);
   const socket = useContext(SocketContext);
   const { user, setUser } = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(true);
@@ -31,8 +23,8 @@ function App() {
     username: "",
     socketId: "",
   });
-  const [error, setError] = useState(null);
   const [allMessages, setAllMessages] = useState([]);
+  const [globalChatMessages, setGlobalChatMessages] = useState([]);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -46,10 +38,6 @@ function App() {
       console.log("Connecté au serveur");
     });
 
-    socket.on("connectedUsers", (users) => {
-      setUsersList(users);
-    });
-
     socket.on("receiveMessage", async (newMessageId) => {
       try {
         const response = await axios.get(
@@ -61,16 +49,21 @@ function App() {
       }
     });
 
-    if (error) {
-      toast.error(error);
-    }
+    socket.on("receiveGlobalMessage", (data) => {
+      const { username, message, socketId, dateSent } = data;
+      setGlobalChatMessages((prevMessages) => [
+        ...prevMessages,
+        { username, message, socketId, dateSent },
+      ]);
+    });
 
     return () => {
       socket.off("connect");
+      socket.off("receiveGlobalMessage");
       socket.off("receiveMessage");
       socket.off("connectedUsers");
     };
-  }, [socket, setUser, error]);
+  }, [socket, setUser]);
 
   if (isLoading) {
     return <div>Chargement...</div>;
@@ -80,6 +73,7 @@ function App() {
     localStorage.removeItem("user");
     setUser(null);
     setAllMessages([]);
+    setGlobalChatMessages([]);
     setSelectedUser({ username: "", socketId: "" });
     socket.emit("disconnectUser", user.socketId);
     setTimeout(() => {
@@ -87,25 +81,7 @@ function App() {
     }, 1000);
   };
 
-  const handleUserClick = async (username, socketId) => {
-    setSelectedUser({ username, socketId });
-
-    try {      
-      const receiver = await getUserbySocketId(socketId);           
-      const response = await axios.get(
-        `http://localhost:5000/messages/${user.id}/${receiver._id}`
-      );
-      setAllMessages(response.data);
-
-    } catch (error) {
-      console.error("Error fetching messages:", error);
-    }
-  };
-
-  const handleSendMessage = (message) => {    
-    if (!selectedUser.socketId) {
-      setError("Veuillez sélectionner un utilisateur");
-    }
+  const handleSendMessage = (message) => {
     if (message.trim() !== "") {
       socket.emit("sendMessage", {
         to: selectedUser.socketId,
@@ -114,6 +90,7 @@ function App() {
       });
     }
   };
+
   return (
     <div className="App">
       {!user ? (
@@ -140,30 +117,12 @@ function App() {
       ) : (
         <div>
           <Container className="d-flex pt-5">
-            <div className="left" style={{ width: "25%" }}>
-              <h2 className="title mb-4">Utilisateurs en ligne</h2>
-              {usersList?.map((userOnLine, index) => (
-                <div
-                  key={index}
-                  className="user d-flex align-items-center mb-2"
-                  onClick={() =>
-                    handleUserClick(userOnLine.username, userOnLine.socketId)
-                  }
-                >
-                  <div
-                    className="circle"
-                    style={{ backgroundColor: getRandomColor() }}
-                  >
-                    {userOnLine.username.charAt(0).toUpperCase()}
-                  </div>
-                  <h3 className="truncate">{userOnLine.username}</h3>
-                  <FriendRequest
-                    userId={user.id}
-                    friendSocketId={userOnLine.socketId}
-                  />
-                </div>
-              ))}
-            </div>
+            <SidePanel
+              socket={socket}
+              user={user}
+              setSelectedUser={setSelectedUser}
+              setAllMessages={setAllMessages}
+            />
             <div className="right" style={{ width: "75%" }}>
               <div className="d-flex justify-content-between">
                 <h2>
@@ -174,12 +133,23 @@ function App() {
                   Déconnexion
                 </Button>
               </div>
-              <ToastContainer />
-              <Message
-                selectedUser={selectedUser}
-                allMessages={allMessages}
-                onSendMessage={handleSendMessage}
-              />
+              {selectedUser.socketId !== "" ? (
+                <PrivateMessages
+                  user={user}
+                  selectedUser={selectedUser}
+                  allMessages={allMessages}
+                  onSendMessage={handleSendMessage}
+                  globalChatMessages={globalChatMessages}
+                />
+              ) : (
+                <>
+                  <GlobalMessages
+                    user={user}
+                    socket={socket}
+                    globalChatMessages={globalChatMessages}
+                  />
+                </>
+              )}
             </div>
           </Container>
         </div>

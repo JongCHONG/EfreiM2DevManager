@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { Button } from "react-bootstrap";
 import { getUserbySocketId } from "../helpers";
 import { SocketContext } from "../contexts/SocketContext";
+import axios from "axios";
 
 const FriendRequest = ({ userId, friendSocketId }) => {
   const [status, setStatus] = useState("idle");
@@ -23,6 +24,26 @@ const FriendRequest = ({ userId, friendSocketId }) => {
       fetchFriendId();
     }
   }, [friendSocketId]);
+
+  useEffect(() => {
+    const checkFriendship = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/friendships/check", {
+          params: { userId1: userId, userId2: friendId },
+        });
+        
+        if (response.data.friends) {
+          setStatus("accepted");
+        }
+      } catch (error) {
+        console.error("Error checking friendship:", error);
+      }
+    };
+
+    if (friendId) {
+      checkFriendship();
+    }
+  }, [friendId, userId]);
 
   const sendFriendRequest = () => {
     if (friendId) {
@@ -46,9 +67,7 @@ const FriendRequest = ({ userId, friendSocketId }) => {
     };
 
     const handleFriendRequestAccepted = (requestId) => {
-      console.log("Friend request accepted:", requestId);
-      console.log("cioucou");
-      
+      console.log("Friend request accepted:", requestId);   
       setStatus("accepted");
     };
 
@@ -64,14 +83,14 @@ const FriendRequest = ({ userId, friendSocketId }) => {
   return (
     <div>
       <Button onClick={sendFriendRequest} disabled={status !== "idle"}>
-        {status === "idle" && "Add Friend"}
-        {status === "pending" && "Request Sent"}
-        {status === "received" && "Request Received"}
-        {status === "accepted" && "Friend Added"}
+        {status === "idle" && "Ajouter"}
+        {status === "pending" && "Demande envoyée"}
+        {status === "received" && "Demande reçue"}
+        {status === "accepted" && "Ami"}
       </Button>
       {status === "received" && (
         <Button onClick={acceptFriendRequest}>
-          Accept Friend Request
+          Accept l'invitation
         </Button>
       )}
     </div>

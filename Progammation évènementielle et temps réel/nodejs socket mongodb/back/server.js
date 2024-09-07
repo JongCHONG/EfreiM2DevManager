@@ -4,6 +4,7 @@ const socketIo = require("socket.io");
 const mongoose = require("mongoose");
 const { join } = require("node:path");
 const cors = require("cors");
+const bcrypt = require("bcrypt"); // Importer bcrypt
 const Message = require("./models/Message");
 const User = require("./models/User");
 const Friendship = require("./models/Friendship");
@@ -31,8 +32,10 @@ app.use(express.json());
 
 const usersRoutes = require("./routes/users");
 const messagesRoutes = require("./routes/messages");
+const friendshipsRoutes = require("./routes/friendships");
 app.use("/users", usersRoutes);
 app.use("/messages", messagesRoutes);
+app.use("/friendships", friendshipsRoutes);
 
 //avec ça on accede à page client.html via localhost:3000
 app.get("/", (req, res) => {
@@ -74,7 +77,9 @@ io.on("connection", (socket) => {
         return;
       }
 
-      user = new User({ username, email, password, socketId: socket.id });
+      const hashedPassword = await bcrypt.hash(password, 10); // Hacher le mot de passe
+
+      user = new User({ username, email, password: hashedPassword, socketId: socket.id });
       await user.save();
 
       // Ajoutez l'utilisateur à la liste des utilisateurs connectés
@@ -103,7 +108,7 @@ io.on("connection", (socket) => {
         return;
       }
 
-      const isPasswordValid = user.password === password;
+      const isPasswordValid = await bcrypt.compare(password, user.password); // Comparer le mot de passe haché
       if (!isPasswordValid) {
         socket.emit("loginError", "Email ou mot de passe incorrect.");
         return;
@@ -252,6 +257,11 @@ io.on("connection", (socket) => {
       console.error("Error processing acceptFriendRequest event:", error);
     }
   });
+
+  socket.on("sendGlobalMessage", ({ username, message }) => {
+    io.emit("receiveGlobalMessage", { username, message, socketId: socket.id, dateSent: new Date(), });
+  });
+
 });
 
 // Démarrer le serveur

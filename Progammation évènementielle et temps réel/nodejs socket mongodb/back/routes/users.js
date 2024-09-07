@@ -23,6 +23,7 @@ app.get("/:id", async (req, res) => {
   }
 });
 
+// Route pour obtenir un utilisateur par socket ID
 app.get("/getUserBySocketId/:socketId", async (req, res) => {
   const { socketId } = req.params;
 
@@ -37,6 +38,28 @@ app.get("/getUserBySocketId/:socketId", async (req, res) => {
   } catch (error) {
     console.error("Error fetching user:", error);
     res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// Route pour obtenir la liste des utilisateurs
+app.get("/", async (req, res) => {
+  try {
+    const users = await User.find({});
+    res.json(users);
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// Récupérer tous les utilisateurs connectés (socketId != null)
+app.get("/connected-users", async (req, res) => {
+  try {
+    // Rechercher tous les utilisateurs avec socketId différent de null
+    const connectedUsers = await User.find({ socketId: { $ne: null } });
+    res.json(connectedUsers);
+  } catch (error) {
+    res.status(500).send("Erreur lors de la récupération des utilisateurs connectés");
   }
 });
 
