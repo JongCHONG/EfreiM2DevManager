@@ -1,0 +1,133 @@
+{
+  "quiz": [
+    {
+      "id": "1",
+      "question": "Qu'est-ce qu'Angular ?",
+      "options": [
+        "a) Un framework JavaScript",
+        "b) Un langage de programmation",
+        "c) Une bibliothèque CSS",
+        "d) Un système de gestion de base de données"
+      ],
+      "correctAnswers": [
+        "a) Un framework JavaScript"
+      ],
+      "isMultiple": false
+    },
+    {
+      "id": "2",
+      "question": "Qui a développé Angular ?",
+      "options": [
+        "a) Facebook",
+        "b) Google",
+        "c) Microsoft",
+        "d) IBM"
+      ],
+      "correctAnswers": [
+        "b) Google"
+      ],
+      "isMultiple": false
+    },
+    {
+      "id": "3",
+      "question": "Quelles sont les fonctionnalités d'Angular ? (choisissez toutes les bonnes réponses)",
+      "options": [
+        "a) Réactivité",
+        "b) Composants",
+        "c) API REST",
+        "d) Gestion d'état"
+      ],
+      "correctAnswers": [
+        "a) Réactivité",
+        "b) Composants",
+        "d) Gestion d'état"
+      ],
+      "isMultiple": true
+    },
+    {
+      "id": "4",
+      "question": "Quel langage est utilisé pour écrire des composants Angular ?",
+      "options": [
+        "a) JavaScript",
+        "b) TypeScript",
+        "c) Python",
+        "d) Java"
+      ],
+      "correctAnswers": [
+        "b) TypeScript"
+      ],
+      "isMultiple": false
+    },
+    {
+      "id": "5",
+      "question": "Quelle directive Angular est utilisée pour faire des boucles ?",
+      "options": [
+        "a) ngIf",
+        "b) ngFor",
+        "c) ngSwitch",
+        "d) ngModel"
+      ],
+      "correctAnswers": [
+        "b) ngFor"
+      ],
+      "isMultiple": false
+    }
+  ],
+  "users": [
+    {
+      "id": "e7b2",
+      "username": "guest",
+      "email": "test1@test.com",
+      "password": "c"
+    },
+    {
+      "id": "9404",
+      "username": "toto",
+      "email": "toto@test.com",
+      "password": "c"
+    },
+    {
+      "id": "ecfa",
+      "username": "pop",
+      "email": "pop@test.com",
+      "password": "c"
+    },
+    {
+      "id": "de6e",
+      "username": "tata",
+      "email": "tata@test.com",
+      "password": "c"
+    },
+    {
+      "id": "bf10",
+      "username": "Gen",
+      "email": "gen@gen.com",
+      "password": "c"
+    },
+    {
+      "id": "c942",
+      "username": "c",
+      "email": "",
+      "password": ""
+    },
+    {
+      "id": "6611",
+      "username": "c",
+      "email": "",
+      "password": ""
+    },
+    {
+      "id": "e4c4",
+      "username": "lol",
+      "email": "lol@test.com",
+      "password": "lollol"
+    },
+    {
+      "id": "04c9",
+      "username": "guest",
+      "email": "test1@test.com",
+      "password": "lololo",
+      "confirmPassword": "lololo"
+    }
+  ]
+}

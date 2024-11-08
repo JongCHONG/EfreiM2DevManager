@@ -1,0 +1,27 @@
+<label for="username" class="block text-gray-700 text-sm font-bold my-2"
+  >Nom d'utilisateur :</label
+>
+<input
+  id="username"
+  type="text"
+  [(ngModel)]="username"
+  class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+/>
+<label for="passwaord" class="block text-gray-700 text-sm font-bold my-2"
+  >Mot de passe :</label
+>
+<input
+  id="password"
+  type="text"
+  [(ngModel)]="password"
+  class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+/>
+<button
+  (click)="startQuiz()"
+  class="bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 mt-4"
+>
+  Commencer le Quiz
+</button>
+<div class="mt-4">
+  <a routerLink="/register" class="text-blue-600 hover:underline">Créer un compte</a>
+</div>

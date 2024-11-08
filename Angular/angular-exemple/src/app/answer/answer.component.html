@@ -1,0 +1,12 @@
+<div *ngFor="let option of options">
+  <label class="flex items-center">
+    <input 
+      [type]="isMultiple ? 'checkbox' : 'radio'" 
+      name="question{{ questionIndex }}" 
+      [value]="option"
+      [checked]="userAnswers.includes(option)" 
+      (change)="onAnswerChange(option)"
+      class="form-checkbox text-blue-600">
+    <span class="ml-2">{{ option }}</span>
+  </label>
+</div>

@@ -1,0 +1,33 @@
+<div
+  class="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4"
+>
+  <div class="max-w-2xl w-full bg-white rounded-lg shadow-md p-6">
+    <h2 class="text-xl text-center mb-2">Bonjour, {{ username }} !</h2>
+    <div *ngFor="let question of quiz; let i = index" class="mb-4">
+      <h2 class="text-xl font-semibold mb-2">{{ question.question }}</h2>
+      <div class="space-y-2">
+        <label class="flex items-center">
+          <app-answer
+            [options]="question.options"
+            [questionIndex]="i"
+            [isMultiple]="question.isMultiple"
+            [userAnswers]="userAnswers[i] || []"
+            (answerSelected)="onAnswerSelected($event)"
+          >
+          </app-answer>
+        </label>
+      </div>
+      <p class="mt-2 text-gray-600">
+        <strong
+          >Bonne réponse(s) : {{ question.correctAnswers.join(", ") }}</strong
+        >
+      </p>
+    </div>
+    <button
+      (click)="score = calculateScore()"
+      class="bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700"
+    >
+      Envoyer
+    </button>
+  </div>
+</div>

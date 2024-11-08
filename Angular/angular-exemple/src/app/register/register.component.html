@@ -1,0 +1,119 @@
+<form
+  [formGroup]="registerForm"
+  (ngSubmit)="onSubmit()"
+  class="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md"
+>
+  <div class="mb-4">
+    <label for="username" class="block text-gray-700 font-bold mb-2"
+      >Prénom:</label
+    >
+    <input
+      id="username"
+      formControlName="username"
+      type="text"
+      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+    />
+    <div
+      *ngIf="
+        registerForm.get('username')?.invalid &&
+        registerForm.get('username')?.touched
+      "
+    >
+      <small
+        *ngIf="registerForm.get('username')?.errors?.['required']"
+        class="text-red-500"
+        >Prénom est requis.</small
+      >
+      <small
+        *ngIf="registerForm.get('username')?.errors?.['minlength']"
+        class="text-red-500"
+        >Prénom doit contenir au moins 3 caractères.</small
+      >
+    </div>
+  </div>
+  <div class="mb-4">
+    <label for="email" class="block text-gray-700 font-bold mb-2">Email:</label>
+    <input
+      id="email"
+      formControlName="email"
+      type="email"
+      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+    />
+    <div
+      *ngIf="
+        registerForm.get('email')?.invalid && registerForm.get('email')?.touched
+      "
+    >
+      <small
+        *ngIf="registerForm.get('email')?.errors?.['required']"
+        class="text-red-500"
+        >Email est requis.</small
+      >
+      <small *ngIf="registerForm.get('email')?.errors?.['email']" class="text-red-500"
+        >Format d'email invalide.</small
+      >
+    </div>
+  </div>
+  <div class="mb-4">
+    <label for="password" class="block text-gray-700 font-bold mb-2"
+      >Mot de passe:</label
+    >
+    <input
+      id="password"
+      formControlName="password"
+      type="password"
+      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+    />
+    <div
+      *ngIf="
+        registerForm.get('password')?.invalid &&
+        registerForm.get('password')?.touched
+      "
+    >
+      <small
+        *ngIf="registerForm.get('password')?.errors?.['required']"
+        class="text-red-500"
+        >Mot de passe est requis.</small
+      >
+      <small
+        *ngIf="registerForm.get('password')?.errors?.['minlength']"
+        class="text-red-500"
+        >Mot de passe doit contenir au moins 6 caractères.</small
+      >
+    </div>
+  </div>
+  <div class="mb-4">
+    <label for="confirmPassword" class="block text-gray-700 font-bold mb-2"
+      >Confirmer le mot de passe:</label
+    >
+    <input
+      id="confirmPassword"
+      formControlName="confirmPassword"
+      type="password"
+      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+    />
+    <div
+      *ngIf="
+        registerForm.get('confirmPassword')?.invalid &&
+        registerForm.get('confirmPassword')?.touched
+      "
+    >
+      <small
+        *ngIf="registerForm.get('confirmPassword')?.errors?.['required']"
+        class="text-red-500"
+        >Confirmation du mot de passe est requise.</small
+      >
+      <small
+        *ngIf="registerForm.get('confirmPassword')?.errors?.['passwordMismatch']"
+        class="text-red-500"
+        >Les mots de passe ne correspondent pas.</small
+      >
+    </div>
+  </div>
+  <button
+    type="submit"
+    class="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+  >
+    S'inscrire
+  </button>
+</form>

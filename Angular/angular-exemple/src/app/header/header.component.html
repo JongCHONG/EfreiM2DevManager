@@ -1,0 +1,11 @@
+<div class="flex items-center">
+  <h1 class="text-3xl font-bold my-6 text-blue-600">Quiz Angular</h1>
+  <button
+    *ngIf="checkLoginStatus()"
+    (click)="logout()"
+    class="bg-red-600 text-white font-bold py-2 px-4 rounded hover:bg-red-700"
+    style="height: 50px;"
+  >
+    Déconnexion
+  </button>
+</div>
