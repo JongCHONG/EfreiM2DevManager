@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"path": "efrei-flix-producer"
+		},
+		{
+			"path": "efrei-flix-consumer"
+		}
+	],
+	"settings": {}
+}
