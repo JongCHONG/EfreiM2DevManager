@@ -1,0 +1,68 @@
+networks:
+  efreiflix-network:
+    driver: bridge
+
+services:
+  efreiflix-db:
+    container_name: efreiflix-db
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE_PATH: efreiflix-db
+    ports:
+      - "2066:2066"
+    volumes:
+      - ./efreiflix-db:/app
+      - /app/node_modules
+    networks:
+      - efreiflix-network
+
+  efreiflix-header:
+    container_name: efreiflix-header
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE_PATH: efreiflix-header
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./efreiflix-header:/app
+      - /app/node_modules
+    networks:
+      - efreiflix-network
+
+  efreiflix-mfe-skeleton:
+    container_name: efreiflix-mfe-skeleton
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE_PATH: efreiflix-mfe-skeleton
+    ports:
+      - "3002:3002"
+    volumes:
+      - ./efreiflix-mfe-skeleton:/app
+      - /app/node_modules
+    networks:
+      - efreiflix-network
+
+  efreiflix-shell:
+    container_name: efreiflix-shell
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE_PATH: efreiflix-shell
+    ports:
+      - "3000:3000"
+    depends_on:
+      - efreiflix-db
+      - efreiflix-header
+      - efreiflix-mfe-skeleton
+    volumes:
+      - ./efreiflix-shell:/app
+      - /app/node_modules
+    networks:
+      - efreiflix-network

@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "start": "json-server --watch efreiflix-db.json --port 2066 --host 0.0.0.0 --cors"
+  },
+  "dependencies": {
+    "json-server": "^0.17.3"
+  }
+}

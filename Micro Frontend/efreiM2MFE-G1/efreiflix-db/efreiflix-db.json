@@ -1,0 +1,181 @@
+{
+  "movies": [
+    {
+      "id": 1,
+      "title": "The Matrix",
+      "year": 1999,
+      "genres": [
+        "Action",
+        "Sci-Fi"
+      ],
+      "description": "Un hacker découvre la vérité sur sa réalité et son rôle dans la guerre contre ses contrôleurs.",
+      "posterUrl": "https://www.movieposters.com/cdn/shop/files/Matrix.mpw.102176_bb2f6cc5-4a16-4512-881b-f855ead3c8ec_480x.progressive.jpg",
+      "trailerUrl": "https://www.youtube.com/embed/vKQi3bBA1y8",
+      "rating": 4.5
+    },
+    {
+      "id": 2,
+      "title": "Inception",
+      "year": 2010,
+      "genres": [
+        "Action",
+        "Adventure",
+        "Sci-Fi"
+      ],
+      "description": "Un voleur spécialisé dans l’extraction d’informations prend part à une mission d’«inception».",
+      "posterUrl": "https://images-ext-1.discordapp.net/external/4HWbQcvPk9dwPgZRtN0VI9LClHpd0a1wQnpjPDNQfCQ/https/www.movieposters.com/cdn/shop/files/inception.mpw.123395_9e0000d1-bc7f-400a-b488-15fa9e60a10c_480x.progressive.jpg?format=webp&width=376&height=565",
+      "trailerUrl": "https://www.youtube.com/embed/8hP9D6kZseM",
+      "rating": 5
+    },
+    {
+      "id": 3,
+      "title": "Interstellar",
+      "year": 2014,
+      "genres": [
+        "Adventure",
+        "Drama",
+        "Sci-Fi"
+      ],
+      "description": "Un groupe d'explorateurs voyage à travers un trou de ver à la recherche d'un nouvel habitat pour l'humanité.",
+      "posterUrl": "https://images-ext-1.discordapp.net/external/KLI29aF-YJuIcUgHB88Xk1KNulw3dR7lpbs35w5u1yo/https/www.movieposters.com/cdn/shop/files/interstellar_593eaeff_480x.progressive.jpg?format=webp&width=381&height=565",
+      "trailerUrl": "https://www.youtube.com/embed/zSWdZVtXT7E",
+      "rating": 4
+    },
+    {
+      "id": 4,
+      "title": "Blade Runner 2049",
+      "year": 2017,
+      "genres": [
+        "Sci-Fi",
+        "Drama"
+      ],
+      "description": "En 2049, un nouveau Blade Runner déterre un secret susceptible de plonger ce qu'il reste de la société dans le chaos.",
+      "posterUrl": "https://images-ext-1.discordapp.net/external/yyWd_Su9628Ws4eal01Wvu_n2EeLESUJvKTKxLCEUXE/https/www.movieposters.com/cdn/shop/files/BladeRunner.mpw.102336_480x.progressive.jpg?format=webp&width=376&height=565",
+      "trailerUrl": "https://www.youtube.com/embed/gCcx85zbxz4",
+      "rating": 4.2
+    },
+    {
+      "id": 5,
+      "title": "Pulp Fiction",
+      "year": 1994,
+      "genres": [
+        "Crime",
+        "Drama"
+      ],
+      "description": "Les vies de deux gangsters, d'un boxeur et d'un couple de braqueurs se croisent dans une série d'histoires de violence et de rédemption.",
+      "posterUrl": "https://images-ext-1.discordapp.net/external/bry82um_EvxuceguRiLfcQ5JrNIsuBh8jbQ6wmIeX7A/https/www.movieposters.com/cdn/shop/products/pulp_fiction_ver2_xlg_480x.progressive.jpg?format=webp&width=380&height=565",
+      "trailerUrl": "https://www.youtube.com/embed/s7EdQ4FqbhY",
+      "rating": 4.7
+    }
+  ],
+  "comments": [
+    {
+      "id": 1,
+      "movieId": 1,
+      "author": "John Doe",
+      "text": "Un classique incontournable, j'adore !",
+      "timestamp": "2025-02-11T10:00:00"
+    },
+    {
+      "id": 2,
+      "movieId": 1,
+      "author": "Jane Smith",
+      "text": "Effets spéciaux incroyables pour l'époque !",
+      "timestamp": "2025-02-11T10:05:00"
+    },
+    {
+      "id": 3,
+      "movieId": 2,
+      "author": "Alice",
+      "text": "Mon film préféré de Nolan, la scène du couloir est dingue !",
+      "timestamp": "2025-02-11T10:10:00"
+    },
+    {
+      "id": 4,
+      "movieId": 5,
+      "author": "Bob",
+      "text": "Dialogue culte et B.O. magistrale.",
+      "timestamp": "2025-02-11T10:15:00"
+    }
+  ],
+  "users": [
+    {
+      "id": 1,
+      "name": "Alice",
+      "bio": "Étudiante passionnée de ciné",
+      "email": "Alice@1.net",
+      "profiles": [
+        {
+          "id": 1,
+          "name": "Alice",
+          "child": false,
+          "email": "",
+          "avatar": "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/31152e75-8fca-497f-bef6-aa065dd7cb67/original=true,quality=90/8A28H215PTYKEQ64TD8EEK2MV0.jpeg",
+          "lang": "fr",
+          "watchlist": [
+            2,
+            4
+          ],
+          "favorites": [
+            1
+          ]
+        },
+        {
+          "id": 2,
+          "name": "Pierre",
+          "child": true,
+          "email": "",
+          "avatar": "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/3cd5e7b7-47fe-470a-b1df-356c700f0c4e/anim=false,width=450/54947162.jpeg",
+          "lang": "fr",
+          "watchlist": [],
+          "favorites": []
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Bob",
+      "bio": "Développeur & grand cinéphile",
+      "email": "bob@2.net",
+      "profiles": [
+        {
+          "id": 1,
+          "name": "Bob",
+          "child": false,
+          "email": "",
+          "avatar": "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/31152e75-8fca-497f-bef6-aa065dd7cb67/original=true,quality=90/8A28H215PTYKEQ64TD8EEK2MV0.jpeg",
+          "lang": "fr",
+          "watchlist": [
+            1,
+            5
+          ],
+          "favorites": []
+        }
+      ]
+    }
+  ],
+  "recommendations": [
+    {
+      "id": 1,
+      "movieId": 1,
+      "recommendedMovieIds": [
+        2,
+        3
+      ]
+    },
+    {
+      "id": 2,
+      "movieId": 3,
+      "recommendedMovieIds": [
+        1,
+        2,
+        4
+      ]
+    }
+  ],
+  "about": {
+    "description": "EfreiFlix est la plateforme de streaming dédiée aux étudiants Efrei.",
+    "version": "1.0.0",
+    "team": "Awesome Devs"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "efreim2tddpoker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "poker.js",
+  "scripts": {
+    "start": "nodemon poker.js",
+    "test:watch": "jest --watchAll --coverage"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.9"
+  }
+}
