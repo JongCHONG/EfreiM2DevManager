@@ -1,4 +1,4 @@
-# Pour lancer : python3 rendu_monnaie.py
+# Pour lancer : python(3) rendu_monnaie.py
 
 def rendu_monnaie(montant_rendu):
     pieces = [4, 3, 1]
