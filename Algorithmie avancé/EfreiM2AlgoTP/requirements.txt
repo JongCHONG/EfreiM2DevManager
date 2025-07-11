@@ -1,0 +1,1 @@
+* * * * * /Library/Frameworks/Python.framework/Versions/3.13/bin/python3 /Users/chongjonghoa/Desktop/EfreiM2AlgoTP/retrain_model.py >> /Users/chongjonghoa/Desktop/EfreiM2AlgoTP/cron.log 2>&1
